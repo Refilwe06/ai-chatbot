@@ -21,6 +21,12 @@
   padding: 1rem;
 }
 
+.sidenav .logo {
+  width: 150px;
+  align-self: flex-start;
+  padding-bottom: 1.5rem;
+}
+
 .sidenav .menu-item {
   display: flex;
   align-items: center;
@@ -30,10 +36,19 @@
   padding: .4rem .4rem .4rem 1rem;
   border-radius: 6px;
   font-size: .8rem;
+  font-weight: 500;
+  opacity: .6;
 }
 
-.active-link {
+.active-link, .menu-item:hover {
   background-color: var(--gray);
+  transition: ease-in-out .2s;
+  opacity: 1;
 }
+
+.pointer, .active-link {
+  cursor: pointer;
+}
+
 
 .main-content {}

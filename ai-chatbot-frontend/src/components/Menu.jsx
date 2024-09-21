@@ -7,7 +7,7 @@ const Menu = () => {
             {
                 STATIC_MENU.map((item, index) => {
                     return (
-                        <MenuItem key={index} {...item} classes={index === 0 ? 'active-link' : ''} />
+                        <MenuItem key={index} {...item} classes={item.label === 'AI Chat' ? 'active-link' : ''} />
                     )
                 })
             }
