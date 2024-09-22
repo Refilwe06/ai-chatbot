@@ -14,10 +14,8 @@
 
 .sidenav {
   background-color: #f8f9f8;
-  display: flex;
   flex-direction: column;
   gap: .5rem;
-  align-items: center;
   height: 100%;
   padding: 1rem;
   border-right: 2px solid var(--gray);
@@ -30,8 +28,6 @@
 }
 
 .sidenav .menu-item {
-  display: flex;
-  align-items: center;
   gap: .5rem;
   color: var(--black);
   width: 100%;
@@ -58,9 +54,7 @@
 .main-content .header {
   height: 55px;
   border-bottom: 2px solid var(--gray);
-  display: flex;
   justify-content: end;
-  align-items: center;
   padding-right: 2rem;
   gap: .5rem;
 }
@@ -80,12 +74,59 @@
   font-weight: 500;
   font-size: .8rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
   gap: .5rem;
 }
 
 .main-content .login-btn:hover {
   opacity: .85;
   transition: all .4s ease-in-out;
+}
+
+.main-content .content {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.no-questions-added {
+  border: 2px solid var(--gray);
+  border-radius: 12px;
+  padding: 1rem 1.2rem 3rem 1.2rem;
+}
+
+.no-questions-added .chat-bubbles {
+  width: 150px;
+}
+
+.flex,
+.no-questions-added,
+.sidenav .menu-item,
+.main-content .header,
+.main-content .login-btn {
+  display: flex;
+}
+
+.flex-col,
+.no-questions-added {
+  flex-direction: column;
+}
+
+.no-questions-added .items-center,
+.sidenav,
+.sidenav .menu-item,
+.main-content .header,
+.main-content .login-btn {
+  align-items: center;
+}
+
+.gap-3,
+.no-questions-added {
+  gap: 3rem;
+}
+
+.no-questions-added .text {
+  gap: .5rem;
+}
+
+.shadow {
+  box-shadow: 1px 2px 1px 0px #edeaea
 }
