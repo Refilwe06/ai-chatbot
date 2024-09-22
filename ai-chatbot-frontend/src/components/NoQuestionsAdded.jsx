@@ -4,7 +4,6 @@ import chatBubbles from '../assets/chat-bubbles.png';
 const NoQuestionsAdded = () => {
     return (
         <>
-            <Text text={'Search History'} fontWeight={600} fontSize={14} />
             <div className='flex flex-col items-center gap-3'>
                 <div className="chat-bubbles">
                     <img src={chatBubbles} alt="chat-bubble" width={'100%'} />

@@ -23,6 +23,12 @@ function App() {
             </div>
             <div className='no-questions-added shadow'>
               {/* <NoQuestionsAdded /> */}
+              <div className="flex space-between ">
+                <Text text={'Search History'} fontWeight={600} fontSize={14} />
+                <div className="clear-chat-history flex items-center">
+                  <Text text={'Clear Chat History'} fontWeight={600} fontSize={14} color='#6a6b70' />
+                </div>
+              </div>
               <div className="flex space-between flex-wrap chat-cards">
                 {
                   [1, 2, 3].map((chat, index) => {
