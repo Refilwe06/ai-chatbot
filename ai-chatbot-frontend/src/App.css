@@ -3,6 +3,7 @@
   --black: #000;
   --light-gray: #f8f9f8;
   --gray: #edecec;
+  --purple: #6e47ea;
 }
 
 .app-wrapper {
@@ -40,15 +41,50 @@
   opacity: .6;
 }
 
-.active-link, .menu-item:hover {
+.sidenav .active-link,
+.menu-item:hover {
   background-color: var(--gray);
   transition: ease-in-out .2s;
   opacity: 1;
 }
 
-.pointer, .active-link {
+.pointer,
+.menu-item .active-link {
   cursor: pointer;
 }
 
 
-.main-content {}
+.main-content .header {
+  height: 55px;
+  border-bottom: 2px solid var(--gray);
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding-right: 2rem;
+  gap: .5rem;
+}
+
+.main-content .header img {
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(to right, pink, #d4c9f8) border-box;
+  border: 4px solid transparent;
+  border-radius: 50%;
+}
+
+.main-content .login-btn {
+  background-color: var(--purple);
+  padding: .4rem .6rem;
+  color: var(--white);
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: .8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.main-content .login-btn:hover {
+  opacity: .85;
+  transition: all .4s ease-in-out;
+}

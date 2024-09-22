@@ -5,7 +5,7 @@ const Sidenav = () => {
     return (
         <>
             <div className="logo">
-                <img src={logo} alt="Superpage" />
+                <img src={logo} alt="Superpage" width={'100%'} />
             </div>
             <Menu />
         </>

@@ -1,6 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import Sidenav from './components/Sidenav';
+import Header from './components/Header';
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         <Sidenav />
       </div>
       <div className="main-content">
-
+        <Header />
       </div>
     </div>
   );
