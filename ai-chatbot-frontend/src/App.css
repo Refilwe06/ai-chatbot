@@ -152,7 +152,7 @@
 
 .input-container input {
   padding: 0.6rem;
-  border-radius: .4rem;
+  border-radius: .4rem .4rem .5rem .5rem;
   border-color: var(--light-purple);
   width: inherit;
 }
@@ -221,12 +221,22 @@
 .bottom-section .input-icons {
   gap: .4rem;
   right: .6rem;
-  top: 45%;
+  top: 30%;
   transform: translateY(-50%);
 }
 
 .bottom-section .paper-plane-icon {
   transform: rotate(315deg);
+}
+
+.bottom-section .disclaimer {
+  justify-content: center;
+  color: var(--white);  
+  font-size: .7rem;
+  background-color: var(--purple);
+  border-radius: 0 0 1rem 1rem;
+  margin-top: -8px;
+  padding: .8rem 0 .6rem 0;
 }
 
 .bottom-section .app-version {
