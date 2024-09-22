@@ -4,6 +4,7 @@
   --light-gray: #f8f9f8;
   --gray: #edecec;
   --purple: #6e47ea;
+  --light-purple: #a48cf4;
 }
 
 .app-wrapper {
@@ -50,7 +51,6 @@
   cursor: pointer;
 }
 
-
 .main-content .header {
   height: 55px;
   border-bottom: 2px solid var(--gray);
@@ -83,14 +83,24 @@
 }
 
 .main-content .content {
-  width: 70%;
-  margin: 0 auto;
+  width: 75%;
+  justify-content: space-between;
+  height: calc(100% - 55px - 3rem);
+  margin: 1rem auto 2rem auto;
+}
+
+.main-content .top-section {
+  gap: 1.5rem;
+}
+
+.main-content .content .text {
+  gap: .3rem;
 }
 
 .no-questions-added {
   border: 2px solid var(--gray);
   border-radius: 12px;
-  padding: 1rem 1.2rem 3rem 1.2rem;
+  padding: 1rem 1.2rem 2rem 1.2rem;
 }
 
 .no-questions-added .chat-bubbles {
@@ -101,12 +111,14 @@
 .no-questions-added,
 .sidenav .menu-item,
 .main-content .header,
-.main-content .login-btn {
+.main-content .login-btn,
+.main-content .content {
   display: flex;
 }
 
 .flex-col,
-.no-questions-added {
+.no-questions-added,
+.main-content .content {
   flex-direction: column;
 }
 
@@ -114,7 +126,8 @@
 .sidenav,
 .sidenav .menu-item,
 .main-content .header,
-.main-content .login-btn {
+.main-content .login-btn,
+.chat-card {
   align-items: center;
 }
 
@@ -128,5 +141,100 @@
 }
 
 .shadow {
-  box-shadow: 1px 2px 1px 0px #edeaea
+  box-shadow: 1px 2px 1px 0px #edeaea;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+.input-container input {
+  padding: 0.6rem;
+  border-radius: .4rem;
+  border-color: var(--light-purple);
+  width: inherit;
+}
+
+.input-container input[type="text"] {
+  font-weight: 500;
+}
+
+.bottom-section {
+  gap: 1rem;
+}
+
+.relative,
+.chat-card .avatar-container {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.round,
+.chat-card .avatar {
+  border-radius: 50%;
+}
+
+.chat-card:hover {
+  background-color: #eee9fd;
+}
+
+.chat-card {
+  gap: .5rem;
+  padding: .8rem;
+  border-radius: .5rem;
+}
+
+.chat-card .avatar {
+  width: 45px;
+  height: 45px;
+  position: relative;
+}
+
+.chat-card .chat-icon {
+  height: 22px;
+  width: 22px;
+  position: absolute;
+  right: -3px;
+  bottom: 3px;
+}
+
+.chat-cards {
+  row-gap: 1rem;
+}
+
+.chat-card .text {
+  gap: 1rem;
+}
+
+.bottom-section .input-icons {
+  gap: .4rem;
+  right: .6rem;
+  top: 45%;
+  transform: translateY(-50%);
+}
+
+.bottom-section .paper-plane-icon {
+  transform: rotate(315deg);
+}
+
+.bottom-section .app-version {
+  text-align: center;
+}
+
+.space-between {
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
