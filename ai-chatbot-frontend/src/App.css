@@ -124,11 +124,12 @@
 }
 
 .no-questions-added .items-center,
-.sidenav,
+.items-center, .sidenav,
 .sidenav .menu-item,
 .main-content .header,
 .main-content .login-btn,
-.chat-card {
+.chat-card,
+.close-circle-icon {
   align-items: center;
 }
 
@@ -175,7 +176,8 @@
 }
 
 .round,
-.chat-card .avatar {
+.chat-card .avatar,
+.chat-suggestions .close-circle-icon {
   border-radius: 50%;
 }
 
@@ -218,6 +220,27 @@
   border-radius: .8rem;
 }
 
+.chat-suggestions {
+  gap: 1rem;
+}
+
+.suggestion-list {
+  gap: .5rem;
+}
+
+.suggestion-list .suggestion,
+.close-circle-icon {
+  border: 1px solid #dadadb;
+  border-radius: .5rem;
+  padding: .4rem;
+}
+
+.close-circle-icon {
+  height: 30px;
+  width: 30px;
+  justify-content: center;
+}
+
 .bottom-section .input-icons {
   gap: .4rem;
   right: .6rem;
@@ -231,7 +254,7 @@
 
 .bottom-section .disclaimer {
   justify-content: center;
-  color: var(--white);  
+  color: var(--white);
   font-size: .7rem;
   background-color: var(--purple);
   border-radius: 0 0 1rem 1rem;
