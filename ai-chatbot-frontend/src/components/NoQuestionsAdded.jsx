@@ -3,7 +3,7 @@ import chatBubbles from '../assets/chat-bubbles.png';
 
 const NoQuestionsAdded = () => {
     return (
-        <div className='no-questions-added shadow'>
+        <>
             <Text text={'Search History'} fontWeight={600} fontSize={14} />
             <div className='flex flex-col items-center gap-3'>
                 <div className="chat-bubbles">
@@ -14,7 +14,7 @@ const NoQuestionsAdded = () => {
                     <Text text={'Type your questions to below input and get fast answers'} fontWeight={400} fontSize={14} color='#727676' />
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
