@@ -1,10 +1,9 @@
 import chatIcon from '../assets/chat-icon.png';
 import avatar from '../assets/avatar.png';
 import Text from './Text';
+import { timeLapsed } from '../utilities/setElapsedTime';
 
-const ChatCard = ({ width }) => {
-    const count = 24;
-    const timeLapsed = '24 mins';
+const ChatCard = ({ width, chatHistory }) => {
     return (
         <div className="flex chat-card pointer" style={{ width }}>
             <div className="avatar-container">
@@ -12,8 +11,8 @@ const ChatCard = ({ width }) => {
                 <img src={chatIcon} alt="chat-icon" className='absolute chat-icon' />
             </div>
             <div className="flex flex-col text ellipsis">
-                <Text text={'How to design saas web application UI application UI'} fontSize={16} fontWeight='600' style={{ width: '80%' }} className={'ellipsis'} />
-                <Text text={`${count} Questions asked • ${timeLapsed} ago`} fontSize={14} fontWeight='500' color='#727676' />
+                <Text text={chatHistory.first_question} fontSize={16} fontWeight='600' style={{ width: '80%' }} className={'ellipsis'} />
+                <Text text={`${chatHistory.question_history.length} Questions asked • ${timeLapsed(chatHistory.last_question_timestamp)}`} fontSize={14} fontWeight='500' color='#727676' />
             </div>
         </div>
     )
