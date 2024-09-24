@@ -58,5 +58,19 @@ router.post('/send-message', authMiddleware, async (req, res) => {
 
 })
 
+router.get('/get-messages/:user_id', authMiddleware, async (req, res) => {
+    const { user_id } = req.params;
+    try {
+        const selectQuery = `SELECT * from chat_sessions WHERE user_id = ?`;
+        const [result] = await db.execute(selectQuery, [user_id]);
+        res.send(result);
+    } catch (err) {
+        console.error(err);
+        res.send(err);
+    }
+})
+
+
+
 
 module.exports = router;
