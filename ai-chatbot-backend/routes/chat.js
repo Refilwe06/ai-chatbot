@@ -23,7 +23,7 @@ const main = async (prompt) => {
 
 
 router.post('/send-message', authMiddleware, async (req, res) => {
-    const { prompt, user_id } = req.body;
+    const { prompt, user_id, session_id } = req.body;
     try {
         const aiResponse = await main(prompt);
         const question_history = {
@@ -32,8 +32,7 @@ router.post('/send-message', authMiddleware, async (req, res) => {
         }
 
         const selectQuery = `SELECT * from chat_sessions WHERE user_id = ?`;
-        const [dbChats] = await db.execute(selectQuery, [user_id]);
-        if (!dbChats.length) {
+        if (!session_id) {
             const insertQuery = `INSERT INTO chat_sessions (user_id, first_question, question_history) VALUES(?, ?, ?)`;
             const [newChat] = await db.execute(insertQuery, [user_id, prompt, [question_history]]);
 
@@ -42,6 +41,7 @@ router.post('/send-message', authMiddleware, async (req, res) => {
             return res.send(result);
         }
 
+        const [dbChats] = await db.execute(selectQuery, [user_id]);
         const recordToUpdate = { ...dbChats[0] };
 
         recordToUpdate.question_history.push(question_history);
@@ -63,6 +63,19 @@ router.get('/get-messages/:user_id', authMiddleware, async (req, res) => {
     try {
         const selectQuery = `SELECT * from chat_sessions WHERE user_id = ?`;
         const [result] = await db.execute(selectQuery, [user_id]);
+        res.send(result);
+    } catch (err) {
+        console.error(err);
+        res.send(err);
+    }
+})
+
+router.delete('/clear-history/:user_id', authMiddleware, async (req, res) => {
+    const { user_id } = req.params;
+    try {
+        const deleteQuery = `DELETE FROM chat_sessions WHERE user_id = ?`;
+        const [result] = await db.execute(deleteQuery, [user_id]);
+        if (result.affectedRows > 0) return res.send([]);
         res.send(result);
     } catch (err) {
         console.error(err);
