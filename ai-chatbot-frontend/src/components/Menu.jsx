@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import MenuItem from './MenuItem'
-import { STATIC_MENU } from '../staticData/MENU'
+import { STATIC_MENU } from '../staticData/sampleData'
 import { UserContext } from '../context/UserContext'
 const Menu = () => {
     const { user } = useContext(UserContext);
