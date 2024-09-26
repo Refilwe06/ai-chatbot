@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const bcrypt = require('bcrypt');
-const { sign, verify } = require('jsonwebtoken');
+const { sign } = require('jsonwebtoken');
 const db = require('../db');
 
 router.post('/register', async (req, res) => {
@@ -18,6 +18,7 @@ router.post('/register', async (req, res) => {
 
             const [[newUser], _fields] = (await db.query(`SELECT * FROM users WHERE email = '${email}'`));
             const token = sign({ email }, process.env.JWT_SECRET, { expiresIn: '1d' });
+            delete newUser.user_password;
             res.send({ ...newUser, token });
         }
     } catch (err) {
@@ -30,7 +31,7 @@ router.post('/login', async (req, res) => {
     const { email, user_password } = req.body;
     try {
         const [[dbUser], _fields] = (await db.query(`SELECT * FROM users WHERE email = '${email}'`));
-        if (!dbUser) return res.status(409).send({ err: 'User does not exist' });
+        if (!dbUser) return res.status(400).send({ err: 'User does not exist' });
         else {
             if (await bcrypt.compare(user_password, dbUser.user_password)) {
                 delete dbUser.user_password;
