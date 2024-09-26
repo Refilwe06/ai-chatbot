@@ -37,3 +37,5 @@ export const STATIC_MENU = [
         strokeWidth: '6',
     }
 ]
+
+export const STATIC_SUGGESTIONS = ['Write JS code for it', 'Explain more', 'Make it simpler']
