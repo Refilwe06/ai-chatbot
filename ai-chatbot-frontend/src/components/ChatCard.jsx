@@ -3,9 +3,10 @@ import avatar from '../assets/avatar.png';
 import Text from './Text';
 import { timeLapsed } from '../utilities/setElapsedTime';
 
-const ChatCard = ({ width, chatHistory }) => {
+const ChatCard = ({ width, chatHistory, onClick }) => {
+
     return (
-        <div className="flex chat-card pointer" style={{ width }}>
+        <div className="flex chat-card pointer" style={{ width }} onClick={() => onClick()}>
             <div className="avatar-container">
                 <img src={avatar} alt="avatar" className='avatar' />
                 <img src={chatIcon} alt="chat-icon" className='absolute chat-icon' />
