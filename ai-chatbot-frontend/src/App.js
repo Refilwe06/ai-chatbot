@@ -25,7 +25,7 @@ function App() {
                   <Route path='register' element={<Register />} />
                   <Route path='/' element={<ChatHistory />} />
                   <Route path='chat-history' element={<ChatHistory />} />
-                  <Route path='view-chat/:chatId' element={<ChatView />} />
+                  <Route path='view-chat/:session_id' element={<ChatView />} />
 
                 </Routes>
               </ChatProvider>

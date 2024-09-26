@@ -124,13 +124,19 @@
 }
 
 .no-questions-added .items-center,
-.items-center, .sidenav,
+.items-center,
+.sidenav,
 .sidenav .menu-item,
 .main-content .header,
 .main-content .login-btn,
 .chat-card,
-.close-circle-icon {
+.close-circle-icon,
+.options {
   align-items: center;
+}
+
+.gap-1 {
+  gap: 1rem;
 }
 
 .gap-3,
@@ -240,6 +246,11 @@
 .close-circle-icon {
   height: 30px;
   width: 30px;
+}
+
+.close-circle-icon,
+.bottom-section .disclaimer,
+.options {
   justify-content: center;
 }
 
@@ -255,7 +266,6 @@
 }
 
 .bottom-section .disclaimer {
-  justify-content: center;
   color: var(--white);
   font-size: .7rem;
   background-color: var(--purple);
@@ -280,4 +290,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.chat-section {
+  max-height: 320px;
+  overflow: auto;
+}
+
+.options {
+  border: 1px solid #dbdbdb;
+  height: 30px;
+  width: 30px;
 }

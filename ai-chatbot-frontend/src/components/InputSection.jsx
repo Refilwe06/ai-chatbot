@@ -6,7 +6,7 @@ import Icon from './Icon';
 import { ChatContext } from '../context/ChatContext'
 import { UserContext } from '../context/UserContext';
 import { STATIC_SUGGESTIONS } from '../staticData/sampleData';
-const InputSection = () => {
+const InputSection = ({ session_id = null }) => {
     const [text, setText] = useState('');
     const { user } = useContext(UserContext);
     const { sendMessage } = useChatAPI(user?.user_id, localStorage.getItem('token'));
@@ -16,7 +16,8 @@ const InputSection = () => {
         if (!text) alert('Prompt cannot be empty');
         sendMessage({
             "prompt": text,
-            "user_id": 1
+            "user_id": 1,
+            "session_id": session_id
         }).then((response) => {
             setChatData([...response, ...chatData]);
         }).catch((err) => {
