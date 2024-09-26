@@ -207,6 +207,8 @@
 
 .chat-cards {
   row-gap: 1rem;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
 .chat-card .text {

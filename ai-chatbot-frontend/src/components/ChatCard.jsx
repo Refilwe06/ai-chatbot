@@ -12,7 +12,7 @@ const ChatCard = ({ width, chatHistory }) => {
             </div>
             <div className="flex flex-col text ellipsis">
                 <Text text={chatHistory.first_question} fontSize={16} fontWeight='600' style={{ width: '80%' }} className={'ellipsis'} />
-                <Text text={`${chatHistory.question_history.length} Questions asked • ${timeLapsed(chatHistory.last_question_timestamp)}`} fontSize={14} fontWeight='500' color='#727676' />
+                <Text text={`${chatHistory.question_history.length} ${chatHistory.question_history.length > 1 ? 'Questions' : 'Question'} asked • ${timeLapsed(chatHistory.updated_at)}`} fontSize={14} fontWeight='500' color='#727676' />
             </div>
         </div>
     )
