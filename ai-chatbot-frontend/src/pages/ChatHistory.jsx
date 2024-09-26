@@ -6,12 +6,13 @@ import NoQuestionsAdded from '../components/NoQuestionsAdded'
 import useChatAPI from '../hooks/useChatAPI'
 import InputSection from '../components/InputSection'
 import { UserContext } from '../context/UserContext'
+import { useNavigate } from 'react-router-dom'
 
 const ChatHistory = () => {
     const { setChatData, chatData = [] } = useContext(ChatContext);
     const { user } = useContext(UserContext);
-    const { getMessages } = useChatAPI(user?.user_id, localStorage.getItem('token'));
-
+    const { getMessages, clearHistory } = useChatAPI(user?.user_id, localStorage.getItem('token'));
+    const navigate = useNavigate();
     const getChats = async () => {
         if (user) {
             const userMessages = (await getMessages(user?.user_id))?.sort((a, b) => (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime()));;
@@ -19,6 +20,12 @@ const ChatHistory = () => {
         }
 
     };
+
+    const handleClearChatHistory = async () => {
+        const response = await clearHistory();
+        setChatData(response);
+    }
+
     useEffect(() => {
         getChats();
     }, [user])
@@ -39,7 +46,7 @@ const ChatHistory = () => {
                             <>
                                 <div className="flex space-between ">
                                     <Text text={'Search History'} fontWeight={600} fontSize={14} />
-                                    <div className="clear-chat-history flex items-center pointer">
+                                    <div className="clear-chat-history flex items-center pointer" onClick={() => handleClearChatHistory()}>
                                         <Text text={'Clear Chat History'} fontWeight={600} fontSize={14} color='#6a6b70' />
                                     </div>
                                 </div>
@@ -47,16 +54,15 @@ const ChatHistory = () => {
                                     {
                                         chatData.map((chatHistory, index) => {
                                             // Using the element in the array below to create a single instance of the ChatCard per list of questions
-                                            return [1].map((_chatSession, index) => {
-                                                return <ChatCard key={index} width={'49%'} chatHistory={chatHistory} />
-                                            })
+                                            return [1].map((_chatSession, index) => <ChatCard key={index} width={'49%'} chatHistory={chatHistory} onClick={() => navigate(`/view-chat/${chatHistory.session_id}`)} />)
                                         })
                                     }
-                                </div></>
+                                </div>
+                            </>
                     }
                 </div>
 
-            </div>
+            </div >
             <InputSection />
         </>
     )

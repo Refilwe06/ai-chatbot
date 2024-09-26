@@ -29,7 +29,19 @@ const useChatAPI = (user_id, token) => {
         }
     };
 
-    return { sendMessage, getMessages, loading, error };
+    const clearHistory = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.delete(`${backendUrl}/chat/clear-history/${user_id}`, { headers: { Authorization: `Bearer ${token}` } });
+            return response.data;
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { sendMessage, getMessages, clearHistory, loading, error };
 };
 
 export default useChatAPI;
