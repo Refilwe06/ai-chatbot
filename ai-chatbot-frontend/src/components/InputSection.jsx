@@ -23,8 +23,23 @@ const InputSection = ({ session_id = null }) => {
         }).catch((err) => {
             console.log(err);
             alert(err.message);
-        })
-        setText('');
+        }).finally(() => setText(''))
+    }
+
+    const handleSuggestionClick = (suggestion) => {
+        setText(suggestion);
+
+        sendMessage({
+            "prompt": suggestion,
+            "user_id": 1,
+            "session_id": session_id
+        }).then((response) => {
+            setChatData([...response, ...chatData]);
+        }).catch((err) => {
+            console.log(err);
+            alert(err.message);
+        }).finally(() => setText(''))
+
     }
 
     return (
@@ -35,7 +50,7 @@ const InputSection = ({ session_id = null }) => {
                     <div className="suggestion-list flex">
                         {
                             [...STATIC_SUGGESTIONS].map((suggestion, index) => {
-                                return <div key={index} className="suggestion flex flex-col items-center pointer">
+                                return <div key={index} className="suggestion flex flex-col items-center pointer" style={{ background: text === suggestion ? '#ececed' : '' }}  onClick={() => handleSuggestionClick(suggestion)}>
                                     <Text text={suggestion} fontSize={12} color='#6a6b70' fontWeight='500' />
                                 </div>
                             })
