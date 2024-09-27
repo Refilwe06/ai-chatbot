@@ -11,7 +11,7 @@ const InputSection = ({ session_id = null }) => {
     const { user } = useContext(UserContext);
     const { sendMessage } = useChatAPI(user?.user_id, localStorage.getItem('token'));
     const { setChatData, chatData } = useContext(ChatContext);
-
+    const [hideChatSuggestions, setHideChatSuggestions] = useState(false);
     const handleSubmitMessage = () => {
         if (!text) alert('Prompt cannot be empty');
         sendMessage({
@@ -23,7 +23,10 @@ const InputSection = ({ session_id = null }) => {
         }).catch((err) => {
             console.log(err);
             alert(err.message);
-        }).finally(() => setText(''))
+        }).finally(() => {
+            setText('');
+            setHideChatSuggestions(false);
+        })
     }
 
     const handleSuggestionClick = (suggestion) => {
@@ -38,25 +41,28 @@ const InputSection = ({ session_id = null }) => {
         }).catch((err) => {
             console.log(err);
             alert(err.message);
-        }).finally(() => setText(''))
+        }).finally(() => {
+            setText('');
+            setHideChatSuggestions(false);
+        })
 
     }
 
     return (
         <div className="flex flex-col bottom-section">
-            <div className="chat-suggestions flex flex-col">
+            <div className="chat-suggestions flex flex-col" style={{display: hideChatSuggestions ? 'none' : 'flex'}}>
                 <Text text={'Chat Suggestions'} fontSize={14} fontWeight='500' color='#6a6b70' />
                 <div className="flex space-between">
                     <div className="suggestion-list flex">
                         {
                             [...STATIC_SUGGESTIONS].map((suggestion, index) => {
-                                return <div key={index} className="suggestion flex flex-col items-center pointer" style={{ background: text === suggestion ? '#ececed' : '' }}  onClick={() => handleSuggestionClick(suggestion)}>
+                                return <div key={index} className="suggestion flex flex-col items-center pointer" style={{ background: text === suggestion ? '#ececed' : '' }} onClick={() => handleSuggestionClick(suggestion)}>
                                     <Text text={suggestion} fontSize={12} color='#6a6b70' fontWeight='500' />
                                 </div>
                             })
                         }
                     </div>
-                    <div className="close-circle-icon flex flex-col items-center round pointer">
+                    <div className="close-circle-icon flex flex-col items-center round pointer" onClick={() => setHideChatSuggestions(true)}>
                         <Icon path={getIconPath('close')} height={20} width={20} strokeWidth={2} />
                     </div>
                 </div>
