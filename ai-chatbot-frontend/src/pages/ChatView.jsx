@@ -47,17 +47,29 @@ const ChatView = () => {
                                         </div>
                                     </div>
                                     <div className="chat-section flex flex-col gap-1">
-                                        <Text text={selectedChat.question_history[0]?.aiResponse} />
+                                        <Text text={selectedChat.question_history[1].content} />
                                         {
-                                            selectedChat?.question_history.slice(1).map((item, index) => {
-                                                return <div key={index} className="flex flex-col gap-1 chat-bubble">
-                                                    <div className="flex items-center">
-                                                        <img style={{ marginRight: '1em' }} src={chatIcon} alt="chat-icon" className='chat-icon' width={40} />
-                                                        <Text text={item.user} fontWeight='500' textTransform={'capitalize'} />
-                                                    </div>
-                                                    <Text text={item?.aiResponse} />
+                                            selectedChat.question_history.slice(2).map((item, index) => {
+                                                const chatArraySlice = [...selectedChat.question_history.slice(2)];
+                                                const arrayToMapWith = chatArraySlice.map((item, indx) => {
+                                                    if (indx % 2 === 0) {
+                                                        return {
+                                                            question: item.content,
+                                                            answer: chatArraySlice[indx + 1].content
+                                                        }
+                                                    }
+                                                }).filter(item => item);
 
-                                                </div>
+                                                return (
+                                                    arrayToMapWith[index] && <div key={index} className="flex flex-col gap-1 chat-bubble">
+                                                        <div className="flex items-center">
+                                                            <img style={{ marginRight: '1em' }} src={chatIcon} alt="chat-icon" className='chat-icon' width={40} />
+                                                            <Text text={arrayToMapWith[index]?.question} fontWeight='600' textTransform={'capitalize'} />
+                                                        </div>
+                                                        <Text text={arrayToMapWith[index]?.answer} />
+
+                                                    </div>
+                                                )
                                             })
                                         }
                                     </div>
