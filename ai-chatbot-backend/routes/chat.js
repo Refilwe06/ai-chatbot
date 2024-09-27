@@ -9,12 +9,9 @@ const openai = new OpenAI({
     apiKey: process.env.OPEN_AI_KEY
 });
 
-const main = async (prompt) => {
+const main = async (messages) => {
     const completion = await openai.chat.completions.create({
-        messages: [
-            { "role": "system", "content": "You are a helpful assistant." },
-            { "role": "user", "content": prompt }
-        ],
+        messages,
         model: "gpt-3.5-turbo",
     });
 
@@ -25,29 +22,52 @@ const main = async (prompt) => {
 router.post('/send-message', authMiddleware, async (req, res) => {
     const { prompt, user_id, session_id } = req.body;
     try {
-        const aiResponse = await main(prompt);
-        const question_history = {
-            user: prompt,
-            aiResponse
-        }
+        let messages = [];
 
-        const selectQuery = `SELECT * from chat_sessions WHERE user_id = ?`;
         if (!session_id) {
+            messages.push(
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            )
+            const assistant = await main(messages);
+            messages.push(
+                {
+                    role: 'assistant',
+                    content: assistant
+                }
+            )
             const insertQuery = `INSERT INTO chat_sessions (user_id, first_question, question_history) VALUES(?, ?, ?)`;
-            const [newChat] = await db.execute(insertQuery, [user_id, prompt, [question_history]]);
+            const [newChat] = await db.execute(insertQuery, [user_id, prompt, [...messages]]);
 
             const [result] = await db.execute(`SELECT * from chat_sessions WHERE session_id = ?`, [newChat.insertId]);
 
             return res.send(result);
         }
 
-        const [dbChats] = await db.execute(selectQuery, [user_id]);
+        const selectQuery = `SELECT * from chat_sessions WHERE session_id = ?`;
+        const [dbChats] = await db.execute(selectQuery, [+session_id]);
         const recordToUpdate = { ...dbChats[0] };
 
-        recordToUpdate.question_history.push(question_history);
+        messages = [
+            ...recordToUpdate.question_history,
+            {
+                role: 'user',
+                content: prompt
+            }
+        ]
+        const assistant = await main(messages);
+        messages.push(
+            {
+                role: 'assistant',
+                content: assistant
+            }
+        )
+
         const updateQuery = `UPDATE chat_sessions SET question_history = ? WHERE session_id = ?`;
 
-        await db.execute(updateQuery, [recordToUpdate.question_history, recordToUpdate.session_id]);
+        await db.execute(updateQuery, [[...messages], recordToUpdate.session_id]);
         const [result] = await db.execute(`SELECT * from chat_sessions WHERE session_id = ?`, [recordToUpdate.session_id]);
 
         res.send(result);
@@ -82,8 +102,5 @@ router.delete('/clear-history/:user_id', authMiddleware, async (req, res) => {
         res.send(err);
     }
 })
-
-
-
 
 module.exports = router;
