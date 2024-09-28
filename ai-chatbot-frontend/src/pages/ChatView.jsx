@@ -8,18 +8,30 @@ import InputSection from '../components/InputSection'
 import Icon from '../components/Icon'
 import getIconPath from '../utilities/getIcons'
 import chatIcon from '../assets/chat-icon.png'
+import { useLoader } from '../context/LoaderContext'
 const ChatView = () => {
     const { chatData, setChatData } = useContext(ChatContext);
     const { user } = useContext(UserContext);
     const { session_id } = useParams();
     const [selectedChat, setSelectedChat] = useState(null);
     const { getMessages, reviewAnswer } = useChatAPI(user?.user_id, localStorage.getItem('token'));
+    const { showLoader, hideLoader } = useLoader();
+
+
     const getChat = async () => {
-        if (chatData?.length === 0) {
-            const chats = await getMessages(user.user_id);
-            return setChatData(chats);
+        try {
+            showLoader();
+            if (chatData?.length === 0) {
+                const chats = await getMessages(user.user_id);
+                return setChatData(chats);
+            }
+            return setSelectedChat(chatData?.find((chat) => chat.session_id === +session_id));
+
+        } catch ({ response }) {
+            alert(response.data.err || 'Error getting chat');
+        } finally {
+            hideLoader();
         }
-        return setSelectedChat(chatData?.find((chat) => chat.session_id === +session_id));
     }
 
     useEffect(() => {
@@ -29,8 +41,16 @@ const ChatView = () => {
     const chips = [{ label: 'Correct answer', value: true, icon: 'like' }, { label: 'Wrong anwser', value: false, icon: 'dislike' }];
 
     const handleChipClick = async (review) => {
-        const chat = await reviewAnswer(selectedChat.session_id, review);
-        return setSelectedChat(chat[0]);
+        try {
+            showLoader();
+            const chat = await reviewAnswer(selectedChat.session_id, review);
+            return setSelectedChat(chat[0]);
+        } catch ({ response }) {
+            alert(response.data.err || 'Error sending answer review');
+        } finally {
+            hideLoader();
+        }
+
     }
     return (
         <>

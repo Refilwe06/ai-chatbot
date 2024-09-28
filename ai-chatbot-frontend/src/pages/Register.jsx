@@ -4,6 +4,7 @@ import '../styles/auth.css';
 import Text from '../components/Text';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
+import { useLoader } from '../context/LoaderContext';
 
 const Register = () => {
   const { signup } = useAuth();
@@ -15,6 +16,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const { showLoader, hideLoader } = useLoader();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -28,12 +31,14 @@ const Register = () => {
     }
 
     try {
+      showLoader();
       const user = await signup({ first_name, last_name, email, user_password });
       setUser(user);
       navigate('/chat-history');
     } catch ({ response }) {
       setError(response.data.err || 'Signup failed. Please try again.');
     } finally {
+      hideLoader();
       setLoading(false);
     }
   };

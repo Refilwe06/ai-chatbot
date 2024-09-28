@@ -7,23 +7,41 @@ import useChatAPI from '../hooks/useChatAPI'
 import InputSection from '../components/InputSection'
 import { UserContext } from '../context/UserContext'
 import { useNavigate } from 'react-router-dom'
+import { useLoader } from '../context/LoaderContext'
 
 const ChatHistory = () => {
     const { setChatData, chatData = [] } = useContext(ChatContext);
     const { user } = useContext(UserContext);
     const { getMessages, clearHistory } = useChatAPI(user?.user_id, localStorage.getItem('token'));
     const navigate = useNavigate();
+    const { showLoader, hideLoader } = useLoader();
     const getChats = async () => {
         if (user) {
-            const userMessages = (await getMessages(user?.user_id))?.sort((a, b) => (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime()));;
-            setChatData(userMessages);
+            try {
+                showLoader();
+                const res = await getMessages(user?.user_id);
+                const userMessages = res?.sort((a, b) => (new Date(b.created_at).getTime()) - (new Date(a.created_at).getTime()));;
+                setChatData(userMessages);
+            } catch ({ response }) {
+                alert(response.data.err || 'Failed to fetch chats');
+            } finally {
+                hideLoader();
+            }
         }
 
     };
 
     const handleClearChatHistory = async () => {
-        const response = await clearHistory();
-        setChatData(response);
+        try {
+            showLoader();
+            const response = await clearHistory();
+            setChatData(response);
+
+        } catch ({ response }) {
+            alert(response.data.err || 'Error clearing chats');
+        } finally {
+            hideLoader();
+        }
     }
 
     useEffect(() => {

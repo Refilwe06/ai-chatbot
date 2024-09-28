@@ -4,6 +4,7 @@ import '../styles/auth.css'
 import { UserContext } from '../context/UserContext';
 import { Link, useNavigate } from 'react-router-dom';
 import Text from '../components/Text';
+import { useLoader } from '../context/LoaderContext';
 const Login = () => {
     const { login } = useAuth();
     const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const { setUser } = useContext(UserContext);
     const navigate = useNavigate();
+    const { showLoader, hideLoader } = useLoader();
 
 
     const handleSubmit = async (e) => {
@@ -27,12 +29,14 @@ const Login = () => {
         }
 
         try {
+            showLoader();
             const user = await login(email, password);
             setUser(user);
             navigate('/chat-history');
         } catch ({ response }) {
             setError(response.data.err || 'Failed to login');
         } finally {
+            hideLoader();
             setLoading(false);
         }
     };

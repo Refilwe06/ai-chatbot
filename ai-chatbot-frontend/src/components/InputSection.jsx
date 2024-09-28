@@ -6,14 +6,19 @@ import Icon from './Icon';
 import { ChatContext } from '../context/ChatContext'
 import { UserContext } from '../context/UserContext';
 import { STATIC_SUGGESTIONS } from '../staticData/sampleData';
+import { useLoader } from '../context/LoaderContext';
 const InputSection = ({ session_id = null }) => {
     const [text, setText] = useState('');
     const { user } = useContext(UserContext);
     const { sendMessage } = useChatAPI(user?.user_id, localStorage.getItem('token'));
     const { setChatData, chatData } = useContext(ChatContext);
     const [hideChatSuggestions, setHideChatSuggestions] = useState(false);
+    const { showLoader, hideLoader } = useLoader();
+
+
     const handleSubmitMessage = () => {
         if (!text) alert('Prompt cannot be empty');
+        showLoader();
         sendMessage({
             "prompt": text,
             "user_id": 1,
@@ -26,12 +31,14 @@ const InputSection = ({ session_id = null }) => {
         }).finally(() => {
             setText('');
             setHideChatSuggestions(false);
+            hideLoader()
         })
     }
 
     const handleSuggestionClick = (suggestion) => {
         setText(suggestion);
 
+        showLoader();
         sendMessage({
             "prompt": suggestion,
             "user_id": 1,
@@ -44,13 +51,14 @@ const InputSection = ({ session_id = null }) => {
         }).finally(() => {
             setText('');
             setHideChatSuggestions(false);
+            hideLoader()
         })
 
     }
 
     return (
         <div className="flex flex-col bottom-section">
-            <div className="chat-suggestions flex flex-col" style={{display: hideChatSuggestions ? 'none' : 'flex'}}>
+            <div className="chat-suggestions flex flex-col" style={{display: (hideChatSuggestions) ? 'none' : 'flex'}}>
                 <Text text={'Chat Suggestions'} fontSize={14} fontWeight='500' color='#6a6b70' />
                 <div className="flex space-between">
                     <div className="suggestion-list flex">
