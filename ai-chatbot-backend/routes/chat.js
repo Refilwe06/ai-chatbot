@@ -103,4 +103,20 @@ router.delete('/clear-history/:user_id', authMiddleware, async (req, res) => {
     }
 })
 
+router.post('/review-answer', authMiddleware, async (req, res) => {
+    const { review, session_id } = req.body;
+    try {
+        const updateQuery = `UPDATE chat_sessions SET is_correct_answer = ? WHERE session_id = ?`;
+
+        await db.execute(updateQuery, [review, session_id]);
+        const [result] = await db.execute(`SELECT * from chat_sessions WHERE session_id = ?`, [session_id]);
+
+        res.send(result);
+    } catch (err) {
+        console.error(err);
+        res.send(err);
+    }
+
+})
+
 module.exports = router;
