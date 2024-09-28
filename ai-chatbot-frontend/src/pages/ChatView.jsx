@@ -13,7 +13,7 @@ const ChatView = () => {
     const { user } = useContext(UserContext);
     const { session_id } = useParams();
     const [selectedChat, setSelectedChat] = useState(null);
-    const { getMessages } = useChatAPI(user?.user_id, localStorage.getItem('token'));
+    const { getMessages, reviewAnswer } = useChatAPI(user?.user_id, localStorage.getItem('token'));
     const getChat = async () => {
         if (chatData?.length === 0) {
             const chats = await getMessages(user.user_id);
@@ -26,6 +26,12 @@ const ChatView = () => {
         if (user) getChat();
     }, [user, chatData]);
 
+    const chips = [{ label: 'Correct answer', value: true, icon: 'like' }, { label: 'Wrong anwser', value: false, icon: 'dislike' }];
+
+    const handleChipClick = async (review) => {
+        const chat = await reviewAnswer(selectedChat.session_id, review);
+        return setSelectedChat(chat[0]);
+    }
     return (
         <>
             <div className="flex flex-col space-between ">
@@ -47,9 +53,9 @@ const ChatView = () => {
                                         </div>
                                     </div>
                                     <div className="chat-section flex flex-col gap-1">
-                                        <Text text={selectedChat.question_history[1].content} />
+                                        <Text text={selectedChat?.question_history?.[1].content} />
                                         {
-                                            selectedChat.question_history.slice(2).map((item, index) => {
+                                            selectedChat.question_history?.slice(2)?.map((_item, index) => {
                                                 const chatArraySlice = [...selectedChat.question_history.slice(2)];
                                                 const arrayToMapWith = chatArraySlice.map((item, indx) => {
                                                     if (indx % 2 === 0) {
@@ -58,6 +64,7 @@ const ChatView = () => {
                                                             answer: chatArraySlice[indx + 1].content
                                                         }
                                                     }
+                                                    return null;
                                                 }).filter(item => item);
 
                                                 return (
@@ -67,11 +74,21 @@ const ChatView = () => {
                                                             <Text text={arrayToMapWith[index]?.question} fontWeight='600' textTransform={'capitalize'} />
                                                         </div>
                                                         <Text text={arrayToMapWith[index]?.answer} />
-
                                                     </div>
                                                 )
+
                                             })
                                         }
+                                        <div className="flex">
+                                            {chips.map((chip, indx) => {
+                                                const answer = selectedChat?.is_correct_answer;
+                                                return (<div key={indx} className={`flex chips pointer ${((answer > 0 && chip.value) || (answer === 0 && !chip.value)) ? 'selected-answer' : 'wrong-answer'}`} onClick={() => handleChipClick(chip.value)}>
+                                                    <Icon path={getIconPath(chip.icon)} width={18} height={18} />
+                                                    <Text text={chip.label} fontSize={14} />
+                                                </div>)
+                                            })
+                                            }
+                                        </div>
                                     </div>
                                 </div>
                             </>

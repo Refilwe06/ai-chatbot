@@ -41,7 +41,19 @@ const useChatAPI = (user_id, token) => {
         }
     };
 
-    return { sendMessage, getMessages, clearHistory, loading, error };
+    const reviewAnswer = async (session_id, review) => {
+        setLoading(true);
+        try {
+            const response = await axios.post(`${backendUrl}/chat/review-answer`, { session_id, review }, { headers: { Authorization: `Bearer ${token}` } });
+            return response.data;
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return { sendMessage, getMessages, clearHistory, reviewAnswer, loading, error };
 };
 
 export default useChatAPI;
