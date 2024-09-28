@@ -15,7 +15,7 @@ function App() {
     <Loader />
       <div className="app-wrapper">
         <UserProvider>
-          <div className="sidenav">
+          <div className="sidenav hide">
             <Sidenav />
           </div>
           <div className="main-content">
