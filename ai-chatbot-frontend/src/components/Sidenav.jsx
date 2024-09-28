@@ -16,7 +16,7 @@ const Sidenav = ({ handleClose = () => { } }) => {
                 <img src={logo} alt="Superpage" width={'95%'} className='mobile-logo' />
                 <Icon path={getIconPath('close')} width={20} height={20} classes='close-icon pointer' onClick={() => handleClose()} />
             </div>
-            <Menu />
+            <Menu handleClose={handleClose} />
         </>
     )
 }

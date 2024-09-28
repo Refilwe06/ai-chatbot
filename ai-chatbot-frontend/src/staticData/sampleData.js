@@ -2,7 +2,7 @@ export const STATIC_MENU = [
     {
         icon: 'chat',
         label: 'AI Chat',
-        route: ''
+        route: 'chat-history'
     },
     {
         icon: 'members',

@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import MenuItem from './MenuItem'
 import { STATIC_MENU } from '../staticData/sampleData'
 import { UserContext } from '../context/UserContext'
-const Menu = () => {
+const Menu = ({ handleClose }) => {
     const { user } = useContext(UserContext);
     return (
         <>
@@ -11,7 +11,9 @@ const Menu = () => {
                     ?
                     STATIC_MENU.map((item, index) => {
                         return (
-                            <MenuItem key={index} {...item} classes={item.label === 'AI Chat' ? 'active-link' : ''} />
+                            <div onClick={handleClose} key={index}>
+                                <MenuItem {...item} classes={item.label === 'AI Chat' ? 'active-link' : ''} />
+                            </div>
                         )
                     })
                     :

@@ -9,10 +9,11 @@ import { ChatProvider } from './context/ChatContext';
 import { UserProvider } from './context/UserContext';
 import ChatView from './pages/ChatView';
 import Loader from './components/Loader';
+import ProtectedRoutes from './utilities/ProtectedRoutes';
 function App() {
   return (
     <BrowserRouter>
-    <Loader />
+      <Loader />
       <div className="app-wrapper">
         <UserProvider>
           <div className="sidenav hide">
@@ -23,12 +24,13 @@ function App() {
             <div className="content">
               <ChatProvider>
                 <Routes>
+                  <Route path='/' element={<Login />} />
                   <Route path='login' element={<Login />} />
                   <Route path='register' element={<Register />} />
-                  <Route path='/' element={<ChatHistory />} />
-                  <Route path='chat-history' element={<ChatHistory />} />
-                  <Route path='view-chat/:session_id' element={<ChatView />} />
-
+                  <Route element={<ProtectedRoutes />}>
+                    <Route path='chat-history' element={<ChatHistory />} />
+                    <Route path='view-chat/:session_id' element={<ChatView />} />
+                  </Route>
                 </Routes>
               </ChatProvider>
 
