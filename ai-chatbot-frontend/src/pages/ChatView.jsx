@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import Text from '../components/Text'
 import { ChatContext } from '../context/ChatContext'
 import { useParams } from 'react-router-dom'
@@ -16,7 +16,11 @@ const ChatView = () => {
     const [selectedChat, setSelectedChat] = useState(null);
     const { getMessages, reviewAnswer } = useChatAPI(user?.user_id, localStorage.getItem('token'));
     const { showLoader, hideLoader } = useLoader();
+    const sectionRef = useRef(null);
 
+    const handleScroll = () => {
+        sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+    };
 
     const getChat = async () => {
         try {
@@ -25,10 +29,10 @@ const ChatView = () => {
                 const chats = await getMessages(user.user_id);
                 return setChatData(chats);
             }
-            return setSelectedChat(chatData?.find((chat) => chat.session_id === +session_id));
-
+            setSelectedChat(chatData?.find((chat) => chat.session_id === +session_id));
+            setTimeout(() => handleScroll(), 1);
         } catch ({ response }) {
-            alert(response.data.err || 'Error getting chat');
+            alert(response?.data?.err || 'Error getting chat');
         } finally {
             hideLoader();
         }
@@ -99,7 +103,7 @@ const ChatView = () => {
 
                                             })
                                         }
-                                        <div className="flex">
+                                        <div className="flex" ref={sectionRef}>
                                             {chips.map((chip, indx) => {
                                                 const answer = selectedChat?.is_correct_answer;
                                                 return (<div key={indx} className={`flex chips pointer ${((answer > 0 && chip.value) || (answer === 0 && !chip.value)) ? 'selected-answer' : 'wrong-answer'}`} onClick={() => handleChipClick(chip.value)}>
