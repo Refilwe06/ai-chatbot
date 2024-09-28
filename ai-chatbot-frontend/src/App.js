@@ -8,9 +8,11 @@ import ChatHistory from './pages/ChatHistory';
 import { ChatProvider } from './context/ChatContext';
 import { UserProvider } from './context/UserContext';
 import ChatView from './pages/ChatView';
+import Loader from './components/Loader';
 function App() {
   return (
     <BrowserRouter>
+    <Loader />
       <div className="app-wrapper">
         <UserProvider>
           <div className="sidenav">
