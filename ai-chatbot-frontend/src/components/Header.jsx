@@ -17,14 +17,17 @@ const Header = () => {
     }
     return (
         <div className='header'>
+            <div>
+                <Icon path={getIconPath('menu')} height={20} width={20} onClick={() => navigate('/')} classes='pointer hamburger-icon' />
+            </div>
             {
                 user ?
-                    <>
+                    <div className='flex right-section'>
                         <b><small>{`${user.first_name} ${user.last_name}`}</small> </b>
                         <img src={avatar} alt="User" width={35} />
                         <Icon path={getIconPath('sign_out')} height={20} width={20} onClick={() => logout()} classes='pointer' />
 
-                    </>
+                    </div>
                     :
                     <div className='login-btn' onClick={() => navigate('/login')}>
                         <Icon path={getIconPath('sign_in')} height={20} width={20} onClick={() => { }} />

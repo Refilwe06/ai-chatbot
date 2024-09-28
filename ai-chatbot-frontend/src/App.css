@@ -55,9 +55,7 @@
 .main-content .header {
   height: 55px;
   border-bottom: 2px solid var(--gray);
-  justify-content: end;
-  padding-right: 2rem;
-  gap: .5rem;
+  padding: 0 2rem;
 }
 
 .main-content .header img {
@@ -131,7 +129,9 @@
 .main-content .login-btn,
 .chat-card,
 .close-circle-icon,
-.options {
+.options,
+.main-content .header,
+.main-content .right-section {
   align-items: center;
 }
 
@@ -144,7 +144,8 @@
   gap: 3rem;
 }
 
-.no-questions-added .text {
+.no-questions-added .text,
+.main-content .right-section {
   gap: .5rem;
 }
 
@@ -278,7 +279,8 @@
   text-align: center;
 }
 
-.space-between {
+.space-between,
+.main-content .header {
   justify-content: space-between;
 }
 
@@ -323,4 +325,50 @@
   color: var(--purple);
   background-color: #eee8fc;
   border: none;
+}
+
+.hamburger-icon {
+  display: none;
+}
+
+/* Responsiveness Styles */
+
+@media (max-width: 805px) {
+  .main-content .content {
+    width: 90%;
+  }
+
+  .sidenav {
+    display: none;
+  }
+
+  .app-wrapper {
+    grid-template-columns: auto;
+  }
+
+  .hamburger-icon {
+    display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-content .content {
+    width: 90%;
+  }
+
+  .sidenav {
+    display: none;
+  }
+
+  .app-wrapper {
+    grid-template-columns: auto;
+  }
+
+  .chat-cards .chat-card {
+    width: 100% !important;
+  }
+
+  .disclaimer .text {
+    font-size: .5rem;
+  }
 }
