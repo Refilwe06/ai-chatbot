@@ -21,69 +21,84 @@ const main = async (messages) => {
 
 router.post('/send-message', authMiddleware, async (req, res) => {
     const { prompt, user_id, session_id } = req.body;
+
     try {
         let messages = [];
 
         if (!session_id) {
-            messages.push(
-                {
-                    role: 'user',
-                    content: prompt
-                }
-            )
+            messages.push({
+                role: 'user',
+                content: prompt
+            });
+
             const assistant = await main(messages);
-            messages.push(
-                {
-                    role: 'assistant',
-                    content: assistant
-                }
-            )
-            const insertQuery = `INSERT INTO chat_sessions (user_id, first_question, question_history) VALUES(?, ?, ?)`;
-            const [newChat] = await db.execute(insertQuery, [user_id, prompt, [...messages]]);
+            messages.push({
+                role: 'assistant',
+                content: assistant
+            });
 
-            const [result] = await db.execute(`SELECT * from chat_sessions WHERE session_id = ?`, [newChat.insertId]);
 
-            return res.send(result);
+            const insertQuery = `INSERT INTO chat_sessions (user_id, first_question, question_history) VALUES (?, ?, ?)`;
+            const [newChat] = await db.execute(insertQuery, [user_id, prompt, JSON.stringify(messages)]);
+
+
+            const [result] = await db.execute(`SELECT * FROM chat_sessions WHERE session_id = ?`, [newChat.insertId]);
+
+            let finalRes = result.map(res => ({ ...res, question_history: JSON.parse(res.question_history) }))
+            return res.send(finalRes);
         }
 
-        const selectQuery = `SELECT * from chat_sessions WHERE session_id = ?`;
+        const selectQuery = `SELECT * FROM chat_sessions WHERE session_id = ?`;
         const [dbChats] = await db.execute(selectQuery, [+session_id]);
+
+        if (dbChats.length === 0) {
+            return res.status(404).send({ message: "Chat not found" });
+        }
+
         const recordToUpdate = { ...dbChats[0] };
 
+        let previousMessages = JSON.parse(recordToUpdate.question_history);
+
         messages = [
-            ...recordToUpdate.question_history,
+            ...previousMessages,
             {
                 role: 'user',
                 content: prompt
             }
-        ]
+        ];
+
         const assistant = await main(messages);
-        messages.push(
-            {
-                role: 'assistant',
-                content: assistant
-            }
-        )
+        messages.push({
+            role: 'assistant',
+            content: assistant
+        });
 
         const updateQuery = `UPDATE chat_sessions SET question_history = ? WHERE session_id = ?`;
+        await db.execute(updateQuery, [JSON.stringify(messages), recordToUpdate.session_id]);
 
-        await db.execute(updateQuery, [[...messages], recordToUpdate.session_id]);
-        const [result] = await db.execute(`SELECT * from chat_sessions WHERE session_id = ?`, [recordToUpdate.session_id]);
-
-        res.send(result);
+        const [result] = await db.execute(`SELECT * FROM chat_sessions WHERE session_id = ?`, [recordToUpdate.session_id]);
+        if (result) {
+            let finalRes = result.map(res => ({ ...res, question_history: JSON.parse(res.question_history) }))
+            return res.send(finalRes);
+        }
+        throw new Error('Error starting chat');
     } catch (err) {
         console.error(err);
-        res.send(err);
+        res.status(500).send({ message: "Server error", error: err });
     }
+});
 
-})
 
 router.get('/get-messages/:user_id', authMiddleware, async (req, res) => {
     const { user_id } = req.params;
     try {
         const selectQuery = `SELECT * from chat_sessions WHERE user_id = ?`;
         const [result] = await db.execute(selectQuery, [user_id]);
-        res.send(result);
+        if (result) {
+            let finalRes = result.map(res => ({ ...res, question_history: JSON.parse(res.question_history) }))
+            return res.send(finalRes);
+        }
+        throw new Error('Error fetching chats');
     } catch (err) {
         console.error(err);
         res.send(err);
@@ -96,7 +111,11 @@ router.delete('/clear-history/:user_id', authMiddleware, async (req, res) => {
         const deleteQuery = `DELETE FROM chat_sessions WHERE user_id = ?`;
         const [result] = await db.execute(deleteQuery, [user_id]);
         if (result.affectedRows > 0) return res.send([]);
-        res.send(result);
+        if (result) {
+            let finalRes = result.map(res => ({ ...res, question_history: JSON.parse(res.question_history) }))
+            return res.send(finalRes);
+        }
+        throw new Error('Error fetching chats');
     } catch (err) {
         console.error(err);
         res.send(err);
@@ -110,8 +129,11 @@ router.post('/review-answer', authMiddleware, async (req, res) => {
 
         await db.execute(updateQuery, [review, session_id]);
         const [result] = await db.execute(`SELECT * from chat_sessions WHERE session_id = ?`, [session_id]);
-
-        res.send(result);
+        if (result) {
+            let finalRes = result.map(res => ({ ...res, question_history: JSON.parse(res.question_history) }))
+            return res.send(finalRes);
+        }
+        throw new Error('Error fetching chats');
     } catch (err) {
         console.error(err);
         res.send(err);
