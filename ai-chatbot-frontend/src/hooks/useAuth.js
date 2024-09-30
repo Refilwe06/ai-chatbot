@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 export function useAuth() {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading] = useState(true);
     const backendUrl = process.env.REACT_APP_API_URL;
 
 
@@ -14,11 +14,14 @@ export function useAuth() {
                 email,
                 user_password,
             });
-            localStorage.setItem('token', response.data.token);
-            delete response.data.token;
-            localStorage.setItem('user', JSON.stringify(response.data));
-            setUser(response.data);
-            return response.data;
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                delete response.data.token;
+                localStorage.setItem('user', JSON.stringify(response.data));
+                setUser(response.data);
+                return response.data;
+            }
+            throw new Error('Error logging in. Please try again.');
         } catch (error) {
             setError(error);
             console.error('Login error:', error);
@@ -30,35 +33,19 @@ export function useAuth() {
     const signup = async (body) => {
         try {
             const response = await axios.post(`${backendUrl}/auth/register`, { ...body });
-            localStorage.setItem('token', response.data.token);
-            delete response.data.token;
-            localStorage.setItem('user', JSON.stringify(response.data));
-            setUser(response.data);
-            return response.data;
+            if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
+                delete response.data.token;
+                localStorage.setItem('user', JSON.stringify(response.data));
+                setUser(response.data);
+                return response.data;
+            }
+            throw new Error('Signup failed. Please try again.');
         } catch (error) {
             console.error('Signup error:', error);
             throw error;
         }
     };
-
-
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('token');
-    };
-
-
-    const checkAuth = async () => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            setUser(user);
-        }
-        setLoading(false);
-    };
-
-    useEffect(() => {
-        checkAuth();
-    }, []);
 
     return {
         user,
@@ -66,6 +53,5 @@ export function useAuth() {
         error,
         login,
         signup,
-        logout,
     };
 }

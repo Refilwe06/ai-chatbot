@@ -9,7 +9,10 @@ const useChatAPI = (user_id, token) => {
         setLoading(true);
         try {
             const response = await axios.post(`${backendUrl}/chat/send-message`, { ...body, user_id }, { headers: { Authorization: `Bearer ${token}` } });
-            return response.data;
+            if (response.data) {
+                return response.data;
+            }
+            throw new Error('Error sending message');
         } catch (err) {
             setError(err);
         } finally {
@@ -21,9 +24,12 @@ const useChatAPI = (user_id, token) => {
         setLoading(true);
         try {
             const response = await axios.get(`${backendUrl}/chat/get-messages/${user_id}`, { headers: { Authorization: `Bearer ${token}` } });
-            return response.data;
+            if (Array.isArray(response.data)) {
+                return response.data;
+            }
+            throw new Error(response?.err || 'Error getting messages');
         } catch (err) {
-            setError(err);
+            return err;
         } finally {
             setLoading(false);
         }
@@ -33,9 +39,13 @@ const useChatAPI = (user_id, token) => {
         setLoading(true);
         try {
             const response = await axios.delete(`${backendUrl}/chat/clear-history/${user_id}`, { headers: { Authorization: `Bearer ${token}` } });
-            return response.data;
+            if (Array.isArray(response.data)) {
+                return response.data;
+            }
+            throw new Error('Error clearing messages');
         } catch (err) {
             setError(err);
+            return err;
         } finally {
             setLoading(false);
         }
@@ -45,9 +55,13 @@ const useChatAPI = (user_id, token) => {
         setLoading(true);
         try {
             const response = await axios.post(`${backendUrl}/chat/review-answer`, { session_id, review }, { headers: { Authorization: `Bearer ${token}` } });
-            return response.data;
+            if (Array.isArray(response.data)) {
+                return response.data;
+            }
+            throw new Error('Error sending answer review');
         } catch (err) {
             setError(err);
+            return err;
         } finally {
             setLoading(false);
         }

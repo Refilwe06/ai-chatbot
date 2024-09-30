@@ -19,38 +19,54 @@ const ChatView = () => {
     const sectionRef = useRef(null);
 
     const handleScroll = () => {
-        sectionRef.current.scrollIntoView({ behavior: 'smooth' });
+        sectionRef?.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     const getChat = async () => {
         try {
             showLoader();
-            if (chatData?.length === 0) {
-                const chats = await getMessages(user.user_id);
-                return setChatData(chats);
+    
+            // Check if chatData exists and is empty
+            if (!chatData || chatData.length === 0) {
+                const chats = await getMessages(user.user_id) || [];
+                setChatData(chats); // Set chat data when no chats exist
+                return;
             }
-            setSelectedChat(chatData?.find((chat) => chat.session_id === +session_id));
-            setTimeout(() => handleScroll(), 1);
-        } catch ({ response }) {
-            alert(response?.data?.err || 'Error getting chat');
+    
+            // Find chat by session_id
+            const selectedChat = chatData.find((chat) => chat.session_id === +session_id);
+    
+            if (selectedChat) {
+                setSelectedChat(selectedChat); // If found, set the selected chat
+                setTimeout(() => handleScroll(), 1); // Scroll after setting chat
+                return;
+            }
+    
+            // If no chat is found, alert the user (Optional)
+            alert("Chat not found");
+    
+        } catch (error) {
+            console.log('Error getting chat:', error);
+            alert(error || 'Error getting chat');
         } finally {
-            hideLoader();
+            hideLoader(); // Always hide loader, whether successful or failed
         }
-    }
+    };
+    
 
     useEffect(() => {
         if (user) getChat();
     }, [user, chatData]);
 
-    const chips = [{ label: 'Correct answer', value: true, icon: 'like' }, { label: 'Wrong anwser', value: false, icon: 'dislike' }];
+    const chips = [{ label: 'Correct answer', value: true, icon: 'like' }, { label: 'Wrong answer', value: false, icon: 'dislike' }];
 
     const handleChipClick = async (review) => {
         try {
             showLoader();
             const chat = await reviewAnswer(selectedChat.session_id, review);
             return setSelectedChat(chat[0]);
-        } catch ({ response }) {
-            alert(response.data.err || 'Error sending answer review');
+        } catch (response) {
+            alert(response || 'Error sending answer review');
         } finally {
             hideLoader();
         }
@@ -106,7 +122,7 @@ const ChatView = () => {
                                         <div className="flex" ref={sectionRef}>
                                             {chips.map((chip, indx) => {
                                                 const answer = selectedChat?.is_correct_answer;
-                                                return (<div key={indx} className={`flex chips pointer ${((answer > 0 && chip.value) || (answer === 0 && !chip.value)) ? 'selected-answer' : 'wrong-answer'}`} onClick={() => handleChipClick(chip.value)}>
+                                                return (<div key={indx} className={`flex items-center chips pointer ${((answer > 0 && chip.value) || (answer === 0 && !chip.value)) ? 'selected-answer' : 'wrong-answer'}`} onClick={() => handleChipClick(chip.value)}>
                                                     <Icon path={getIconPath(chip.icon)} width={18} height={18} />
                                                     <Text text={chip.label} fontSize={14} />
                                                 </div>)

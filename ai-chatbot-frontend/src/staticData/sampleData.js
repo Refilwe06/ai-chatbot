@@ -38,4 +38,4 @@ export const STATIC_MENU = [
     }
 ]
 
-export const STATIC_SUGGESTIONS = ['Write JS code for it', 'Explain more', 'Make it simpler']
+export const STATIC_SUGGESTIONS = ['Write JS code for it', 'Explain more']
