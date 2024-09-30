@@ -17,11 +17,11 @@ const InputSection = ({ session_id = null }) => {
     const { showLoader, hideLoader } = useLoader();
     const navigate = useNavigate();
 
-    const handleSubmitMessage = () => {
-        if (!text) alert('Prompt cannot be empty');
+    const handleSubmitMessage = (suggestion = null) => {
+        if (!text && !suggestion) alert('Prompt cannot be empty');
         showLoader();
         sendMessage({
-            "prompt": text,
+            "prompt": suggestion ?? text,
             "user_id": 1,
             "session_id": session_id
         }).then((response) => {
@@ -39,29 +39,12 @@ const InputSection = ({ session_id = null }) => {
 
     const handleSuggestionClick = (suggestion) => {
         setText(suggestion);
-
-        showLoader();
-        sendMessage({
-            "prompt": suggestion,
-            "user_id": 1,
-            "session_id": session_id
-        }).then((response) => {
-            setChatData([...response, ...chatData]);
-            if (!session_id) navigate(`/view-chat/${response[0].session_id}`)
-        }).catch((err) => {
-            console.log(err);
-            alert(err.message);
-        }).finally(() => {
-            setText('');
-            setHideChatSuggestions(false);
-            hideLoader()
-        })
-
+        handleSubmitMessage(suggestion);
     }
 
     return (
         <div className="flex flex-col bottom-section">
-            <div className="chat-suggestions flex flex-col" style={{ display: (hideChatSuggestions) ? 'none' : 'flex' }}>
+            <div className="chat-suggestions flex flex-col" style={{ display: (hideChatSuggestions || !session_id) ? 'none' : 'flex' }}>
                 <Text text={'Chat Suggestions'} fontSize={14} fontWeight='500' color='#6a6b70' />
                 <div className="flex space-between">
                     <div className="suggestion-list flex">
